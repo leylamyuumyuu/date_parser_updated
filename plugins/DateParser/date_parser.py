@@ -20,7 +20,7 @@ def main():
     config = stash.get_configuration()["plugins"]
     settings = {"setTitle": False, "simplifiedPattern": False, "dryRun": False}
     if "date_parser" in config:
-        settings.update(config["date_parser"])
+        settings.update(config["date_parser_redux"])
     if settings.get("simplifiedPattern", False):
         # simplified pattern only matches YYYY-MM-DD
         p = r"((\d{4})[\.\-/\\](\d{1,2})[\.\-/\\](\d{1,2}))\D*"
