@@ -19,7 +19,7 @@ def main():
     stash = StashInterface(json_input["server_connection"])
     config = stash.get_configuration()["plugins"]
     settings = {"setTitle": False, "simplifiedPattern": False, "dryRun": False}
-    if "date_parser" in config:
+    if "date_parser_redux" in config:
         settings.update(config["date_parser_redux"])
     log.info(settings)
     if settings.get("simplifiedPattern", False):
