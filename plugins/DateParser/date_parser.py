@@ -13,7 +13,6 @@ def main():
     global stash
     global pattern
 
-
     json_input = json.loads(sys.stdin.read())
     mode_arg = json_input["args"]["mode"]
 
@@ -28,7 +27,7 @@ def main():
     else:
         p = r"\D((\d{4}|\d{1,2})[\._\- /\\](\d{1,2}|[a-zA-Z]{3,}\.*)[\._\- /\\](\d{4}|\d{1,2}))\D*"
     pattern = re.compile(p)
-
+    log.warning(f"Dry Run: {settings.get("dryRun")}")
     match mode_arg:
         case "gallery":
             find_date_for_galleries(settings)
