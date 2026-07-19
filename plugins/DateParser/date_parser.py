@@ -138,32 +138,37 @@ def process_item(item, update_function, settings, folder=False, **kwargs):
 def find_date_for_images(settings):
     page = 0
     total = -1
+    processed = 0
+
     # loop through page to avoid load on server/client
     image_count, _ = stash.find_images(f={"is_missing": "date"}, filter = {"per_page": 500, "page":page}, get_count=True)
     log.info(f"Found {image_count} images")
     while total != 0:
         images = stash.find_images(f={"is_missing": "date"}, filter = {"per_page": 500, "page":page}, fragment=GALLERY_FRAGMENT['image'])
         total = len(images)
-        log.info(f"This page has {total} images.")
+        # log.info(f"This page has {total} images.")
         for i, image in enumerate(images):
-            log.progress(i / total)
+            log.progress(processed / image_count)
             process_item(image, stash.update_image, settings,  item_type="image")
+            processed += 1 
         page += 1
     return
 
 def find_date_for_scenes(settings):
     page = 0
     total = -1
+    processed = 0
     # loop through page to avoid load on server/client
     image_count, _ = stash.find_images(f={"is_missing": "date"}, filter = {"per_page": 500, "page":page}, get_count=True)
     log.info(f"Found {image_count} scenes")
     while total != 0:
         scenes = stash.find_scenes(f={"is_missing": "date"}, filter = {"per_page": 500, "page":page}, fragment=GALLERY_FRAGMENT['scene'])
         total = len(scenes)
-        log.info(f"Found {total} scenes")
+        # log.info(f"Found {total} scenes")
         for i, scene in enumerate(scenes):
-            log.progress(i / total)
+            log.progress(processed / image_count)
             process_item(scene, stash.update_scene, settings, item_type="Scene")
+            processed += 1
         page += 1
     return
 
