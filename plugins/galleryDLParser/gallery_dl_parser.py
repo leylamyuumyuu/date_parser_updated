@@ -269,13 +269,17 @@ def main():
 	dryRun = settings.get("dryRun", False)
 	log.warning(f"Dry Run: {dryRun}")
 	f = {}
-	if settings.get("processAll", False):
+	if not settings.get("processAll", False):
 		f = {
 			"custom_fields" : {
 				"field": "gdl_found",
 				"modifier": "EQUALS",
 				"value": 0
-			}
+			},
+			"OR": {
+					"field": "gdl_found",
+					"modifier": "IS_NULL"
+				}
 		}
 	match mode_arg:
 		case "image":
