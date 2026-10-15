@@ -174,7 +174,7 @@ def load(filepath):
 def open_json_file(image):
 	files = image['files']
 	data = [
-		load(file) for file in files
+		load(file.get("path") + ".json") for file in files
 	]
 	data = [d for d in data if d]
 	return data
