@@ -219,17 +219,21 @@ def cascade_get(dictionary, key: str):
 
 def process_image(image, dryRun = False):
 	data = open_json_file(image)
+	log.info(data)
 	update_input = {"id": image['id'], "custom_field": {"partial": {}}}
 	updated = False
 	for field in FIELDS:
+		log.debug(field.get("output_field"))
 		choose = field.get("choose")
 		choices = []
 		input_fields = field.get("input_fields", [])
+		log.debug(input_fields)
 		for d in data:
 			for f in input_fields:
 				if o:=cascade_get(d,f):
 					choices.append(o)
-
+		log.debug("choices before filtering")
+		log.debug(choices)
 		if len(choices) > 0:
 			# field.get("process", lambda x: x)(choices)
 			if c:=field.get("processing"):
@@ -239,6 +243,8 @@ def process_image(image, dryRun = False):
 				choices = choices[0]
 		else:
 			break
+		log.debug("choices after filtering")
+		log.debug(choices)
 		if choices:
 			update_input[field['output_field']] = choices
 			updated = True
