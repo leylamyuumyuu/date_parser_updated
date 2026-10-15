@@ -163,6 +163,7 @@ SCENE_QUERY = """
 	}
 """
 TOTAL = 0
+processAll = False
 def load(filepath):
 	try:
 		with open(filepath) as fp:
@@ -188,6 +189,10 @@ def get_images(f = {}, filter = {}):
 		g.update({"page": page})
 		total, images = stash.find_images(f, g, fragment=IMAGE_QUERY, get_count=True)
 		for i in images:
+			log.debug(i['custom_fields'])
+			findAll = cascade_get(i, "custom_fields.gdl_found")
+			if processAll and not findAll:
+				continue
 			yield i
 		page += 1
 def get_scenes(f = {}, filter = {}):
@@ -210,12 +215,14 @@ def get_files(*args, **kwargs):
 		yield i
 	pass
 
-def cascade_get(dictionary, key: str):
+def cascade_get(dictionary, key: str, default = None):
 	top, *rest = key.split(".", 1)
 	top_result = dictionary.get(top)
-	if len(rest) == 0 or top_result == None:
+	if top_result == None:
+		return default
+	if len(rest) == 0:
 		return top_result
-	return cascade_get(top_result, rest[0])
+	return cascade_get(top_result, rest[0], default)
 
 def process_image(image, dryRun = False):
 	data = open_json_file(image)
@@ -269,18 +276,7 @@ def main():
 	dryRun = settings.get("dryRun", False)
 	log.warning(f"Dry Run: {dryRun}")
 	f = {}
-	if not settings.get("processAll", False):
-		f = {
-			"custom_fields" : {
-				"field": "gdl_found",
-				"modifier": "EQUALS",
-				"value": 0
-			},
-			"OR": {
-					"field": "gdl_found",
-					"modifier": "IS_NULL"
-				}
-		}
+	processAll = settings.get("processAll", False)
 	match mode_arg:
 		case "image":
 			files = get_images(f)
