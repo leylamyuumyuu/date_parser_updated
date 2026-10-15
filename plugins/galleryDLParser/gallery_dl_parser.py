@@ -148,8 +148,8 @@ IMAGE_QUERY = """
 	title
 	date
 	custom_fields
-	files {
-			path	
+	files {	
+		path	
 	}
 """
 
@@ -164,6 +164,7 @@ SCENE_QUERY = """
 """
 
 def load(filepath):
+	print(filepath)
 	try:
 		with open(filepath) as fp:
 			return json.load(fp)
@@ -173,7 +174,7 @@ def load(filepath):
 def open_json_file(image):
 	files = image['files']
 	data = [
-		load(file + ".json") for file in files
+		load(file) for file in files
 	]
 	data = [d for d in data if d]
 	return data
