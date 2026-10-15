@@ -219,7 +219,7 @@ def cascade_get(dictionary, key: str):
 
 def process_image(image, dryRun = False):
 	data = open_json_file(image)
-	update_input = {"id": image['id'], "custom_field": {"partial": {""}}}
+	update_input = {"id": image['id'], "custom_field": {"partial": {}}}
 	updated = False
 	for field in FIELDS:
 		choose = field.get("choose")

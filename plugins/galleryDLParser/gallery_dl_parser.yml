@@ -1,7 +1,7 @@
 name: Gallery-dl JSON Parser
 # requires: PythonDepManager
 description: Copies relevant tags from GDL to Stash
-version: 0.0.1
+version: 0.0.2
 url: https://example.com
 exec:
   - python
