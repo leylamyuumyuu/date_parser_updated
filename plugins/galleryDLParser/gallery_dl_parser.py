@@ -232,8 +232,8 @@ def process_image(image, dryRun = False):
 	updated = False
 	found = len(data) > 0
 	if found:
-		log.info("data found: ")
-		log.info(data)
+		log.info("data found")
+		# log.info(data)
 		for field in FIELDS:
 			log.debug(field.get("output_field"))
 			choose = field.get("choose")
@@ -244,9 +244,10 @@ def process_image(image, dryRun = False):
 				for f in input_fields:
 					if o:=cascade_get(d,f):
 						choices.append(o)
-			log.debug("choices before filtering")
-			log.debug(choices)
+			# log.debug("choices before filtering")
+			# log.debug(choices)
 			if len(choices) > 0:
+				log.info(f"Found choices: {choices}")
 				# field.get("process", lambda x: x)(choices)
 				if c:=field.get("processing"):
 					choices = c(choices)
@@ -264,6 +265,8 @@ def process_image(image, dryRun = False):
 	update_input['custom_fields']['partial']['gdl_checked'] = int(True)
 	update_input['custom_fields']['partial']['gdl_updated'] = int(updated)
 	if not dryRun or not found:
+		log.info("Updating image")
+		log.debug(update_input)
 		stash.update_image(update_input)
 	else:
 		log.info(update_input)
