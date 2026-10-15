@@ -182,7 +182,7 @@ def open_json_file(image):
 def get_images(f = {}, filter = {}):
 	page = 0
 	total = -1
-	g = {"per_page": 500}
+	g = {"per_page": 500, "sort_by":"created_at", "direction": "DESC"}
 	g.update(filter)
 	while total != 0:
 		g.update({"page": page})
@@ -193,7 +193,7 @@ def get_images(f = {}, filter = {}):
 def get_scenes(f = {}, filter = {}):
 	page = 0
 	total = -1
-	g = {"per_page": 500}
+	g = {"per_page": 500, "sort_by":"created_at", "direction": "DESC"}
 	g.update(filter)
 	while total != 0:
 		g.update({"page": page})
@@ -220,12 +220,13 @@ def cascade_get(dictionary, key: str):
 def process_image(image, dryRun = False):
 	data = open_json_file(image)
 	
-	log.info("data found: ")
-	log.info(data)
+
 	update_input = {"id": image['id'], "custom_fields": {"partial": {}}}
 	updated = False
 	found = len(data) > 0
 	if found:
+		log.info("data found: ")
+		log.info(data)
 		for field in FIELDS:
 			log.debug(field.get("output_field"))
 			choose = field.get("choose")
