@@ -182,7 +182,7 @@ def open_json_file(image):
 def get_images(f = {}, filter = {}):
 	page = 0
 	total = -1
-	g = {"per_page": 500, "sort":"created_at", "direction": "desc"}
+	g = {"per_page": 500, "sort":"created_at", "direction": "DESC"}
 	g.update(filter)
 	while total != 0:
 		g.update({"page": page})
@@ -193,7 +193,7 @@ def get_images(f = {}, filter = {}):
 def get_scenes(f = {}, filter = {}):
 	page = 0
 	total = -1
-	g = {"per_page": 500, "sort":"created_at", "direction": 0}
+	g = {"per_page": 500, "sort":"created_at", "direction": "DESC"}
 	g.update(filter)
 	while total != 0:
 		g.update({"page": page})
