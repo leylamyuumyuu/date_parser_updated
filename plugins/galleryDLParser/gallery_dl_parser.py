@@ -222,7 +222,7 @@ def process_image(image, dryRun = False):
 	
 	log.info("data found: ")
 	log.info(data)
-	update_input = {"id": image['id'], "custom_field": {"partial": {}}}
+	update_input = {"id": image['id'], "custom_fields": {"partial": {}}}
 	updated = False
 	found = len(data) > 0
 	if found:
@@ -252,9 +252,9 @@ def process_image(image, dryRun = False):
 			if choices:
 				update_input[field['output_field']] = choices
 				updated = True
-	update_input['custom_field']['partial']['gdl_found'] = int(found)
-	update_input['custom_field']['partial']['gdl_checked'] = int(True)
-	update_input['custom_field']['partial']['gdl_updated'] = int(updated)
+	update_input['custom_fields']['partial']['gdl_found'] = int(found)
+	update_input['custom_fields']['partial']['gdl_checked'] = int(True)
+	update_input['custom_fields']['partial']['gdl_updated'] = int(updated)
 	if not dryRun or not found:
 		stash.update_image(update_input)
 	else:
