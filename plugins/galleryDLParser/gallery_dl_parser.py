@@ -164,7 +164,7 @@ SCENE_QUERY = """
 """
 
 def load(filepath):
-	print(filepath)
+	log.info(filepath)
 	try:
 		with open(filepath) as fp:
 			return json.load(fp)
