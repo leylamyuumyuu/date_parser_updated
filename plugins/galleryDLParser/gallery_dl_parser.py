@@ -221,6 +221,8 @@ def process_image(image, dryRun = False):
 	data = open_json_file(image)
 	log.info("data found: ")
 	log.info(data)
+	if len(data) ==0:
+		return
 	update_input = {"id": image['id'], "custom_field": {"partial": {}}}
 	updated = False
 	for field in FIELDS:
