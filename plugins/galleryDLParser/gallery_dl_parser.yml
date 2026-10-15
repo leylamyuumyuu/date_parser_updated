@@ -1,0 +1,27 @@
+name: Gallery-dl JSON Parser
+# requires: PythonDepManager
+description: Copies relevant tags from GDL to Stash
+version: 0.0.1
+url: https://example.com
+exec:
+  - python
+  - "{pluginDir}/gallery_dl_parser.py"
+interface: raw
+tasks:
+  - name: Scan all files
+    description: Scans all files
+    defaultArgs:
+      mode: all
+  - name: Scan images
+    description: Scans images
+    defaultArgs:
+      mode: image
+  - name: Scan scenes
+    description: Scans scenes
+    defaultArgs:
+      mode: scene
+settings:
+  dryRun:
+    displayName: Dry Run
+    description: Run without modifying database
+    type: BOOLEAN
