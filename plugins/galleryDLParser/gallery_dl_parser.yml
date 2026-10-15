@@ -25,3 +25,7 @@ settings:
     displayName: Dry Run
     description: Run without modifying database
     type: BOOLEAN
+  processAll:
+    displayName: Process All
+    description: Doesn't ignore files previously marked as not found or processed
+    type: BOOLEAN

@@ -162,11 +162,11 @@ SCENE_QUERY = """
 			path
 	}
 """
-
+TOTAL = 0
 def load(filepath):
-	log.info(filepath)
 	try:
 		with open(filepath) as fp:
+			log.info(f"found: {filepath}")
 			return json.load(fp)
 	except:
 		return None
@@ -219,41 +219,43 @@ def cascade_get(dictionary, key: str):
 
 def process_image(image, dryRun = False):
 	data = open_json_file(image)
-	if len(data) ==0:
-		return
+	
 	log.info("data found: ")
 	log.info(data)
 	update_input = {"id": image['id'], "custom_field": {"partial": {}}}
 	updated = False
-	for field in FIELDS:
-		log.debug(field.get("output_field"))
-		choose = field.get("choose")
-		choices = []
-		input_fields = field.get("input_fields", [])
-		log.debug(input_fields)
-		for d in data:
-			for f in input_fields:
-				if o:=cascade_get(d,f):
-					choices.append(o)
-		log.debug("choices before filtering")
-		log.debug(choices)
-		if len(choices) > 0:
-			# field.get("process", lambda x: x)(choices)
-			if c:=field.get("processing"):
-				choices = c(choices)
-				choices = [c for c in choices if c]
-			if choose == "first":
-				choices = choices[0]
-		else:
-			break
-		log.debug("choices after filtering")
-		log.debug(choices)
-		if choices:
-			update_input[field['output_field']] = choices
-			updated = True
-	update_input['custom_field']['partial']['gdl_checked'] = True
-	update_input['custom_field']['partial']['gdl_updated'] = updated
-	if not dryRun:
+	found = len(data) > 0
+	if found:
+		for field in FIELDS:
+			log.debug(field.get("output_field"))
+			choose = field.get("choose")
+			choices = []
+			input_fields = field.get("input_fields", [])
+			log.debug(input_fields)
+			for d in data:
+				for f in input_fields:
+					if o:=cascade_get(d,f):
+						choices.append(o)
+			log.debug("choices before filtering")
+			log.debug(choices)
+			if len(choices) > 0:
+				# field.get("process", lambda x: x)(choices)
+				if c:=field.get("processing"):
+					choices = c(choices)
+					choices = [c for c in choices if c]
+				if choose == "first":
+					choices = choices[0]
+			else:
+				break
+			log.debug("choices after filtering")
+			log.debug(choices)
+			if choices:
+				update_input[field['output_field']] = choices
+				updated = True
+	update_input['custom_field']['partial']['gdl_found'] = int(found)
+	update_input['custom_field']['partial']['gdl_checked'] = int(True)
+	update_input['custom_field']['partial']['gdl_updated'] = int(updated)
+	if not dryRun or not found:
 		stash.update_image(update_input)
 	else:
 		log.info(update_input)
@@ -265,14 +267,22 @@ def main():
 	settings.update(config.get("gallery_dl_parser", {}))
 	dryRun = settings.get("dryRun", False)
 	log.warning(f"Dry Run: {dryRun}")
-
+	f = {}
+	if settings.get("processAll", False):
+		f = {
+			"custom_fields" : {
+				"field": "gdl_found",
+				"modifier": "EQUALS",
+				"value": 0
+			}
+		}
 	match mode_arg:
 		case "image":
-			files = get_images()
+			files = get_images(f)
 		case "scene":
-			files = get_scenes()
+			files = get_scenes(f)
 		case _:
-			files = get_files()
+			files = get_files(f)
 			pass
 	
 	for file in files:
