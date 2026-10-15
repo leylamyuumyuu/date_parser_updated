@@ -249,6 +249,8 @@ def process_image(image, dryRun = False):
 	update_input['custom_field']['partial']['gdl_updated'] = updated
 	if not dryRun:
 		stash.update_image(update_input)
+	else:
+		log.info(update_input)
 
 def main():
 	config = stash.get_configuration()["plugins"]
@@ -269,7 +271,7 @@ def main():
 	
 	for file in files:
 		process_image(file, dryRun)
-		break
+		# break
 
 
 if __name__=="__main__":
