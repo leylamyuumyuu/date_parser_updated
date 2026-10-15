@@ -148,10 +148,8 @@ IMAGE_QUERY = """
 	title
 	date
 	custom_fields
-	visual_files {
-		...on BaseFile {
-			path
-		}
+	files {
+			path	
 	}
 """
 
@@ -160,10 +158,8 @@ SCENE_QUERY = """
 	title
 	date
 	custom_fields
-	visual_files {
-		...on BaseFile {
+	files {
 			path
-		}
 	}
 """
 
