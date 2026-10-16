@@ -252,7 +252,7 @@ def process_image(image, dryRun = False):
 				log.info(f"Found choices: {choices}")
 				# field.get("process", lambda x: x)(choices)
 				if c:=field.get("processing"):
-					log.debug(f"Running processing script on choices for field {field}.")
+					log.warning(f"Running processing script on choices for field {field}.")
 					choices = c(choices)
 					choices = [c for c in choices if c]
 				if choose == "first":
