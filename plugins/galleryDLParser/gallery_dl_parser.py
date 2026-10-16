@@ -85,7 +85,7 @@ stash = StashInterface(json_input["server_connection"])
 
 def _find_performer(perf):
 	log.debug(f"perf: {perf}")
-	p = stash.find_performer(perf, True)
+	p = stash.find_performer({"name": perf}, True)
 	log.debug(f"found performer: {p}")
 	return p
 def process_performer(performers):
