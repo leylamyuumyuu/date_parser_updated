@@ -144,9 +144,9 @@ FIELDS = [
 	{"output_field": "urls", "input_fields": urls_fields, "choose": "all"},
 	{"output_field": "performer_ids", "input_fields": performer_fields, "choose": "all", "processing": process_performer},
 	# {"output_field": "group", "input_fields": group_fields, "choose": "first", "processing": process_group},
-	{"output_field": "studio", "input_fields": studio_fields, "choose": "first"},
+	# {"output_field": "studio", "input_fields": studio_fields, "choose": "first"},
 	{"output_field": "photographer", "input_fields": photographer_fields, "choose": "first"},
-	{"output_field": "tags", "input_fields": tags_fields, "choose": "all"},
+	{"output_field": "tag_ids", "input_fields": tags_fields, "choose": "all"},
 ]
 
 IMAGE_QUERY = """
