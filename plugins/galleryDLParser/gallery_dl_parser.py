@@ -83,9 +83,13 @@ json_input = json.loads(sys.stdin.read())
 mode_arg = json_input["args"]["mode"]
 stash = StashInterface(json_input["server_connection"])
 
+def _find_performer(perf):
+	log.debug(f"perf: {perf}")
+	p = stash.find_performer(perf, True)
+	return p
 def process_performer(performers):
 	log.debug("Running process performer.")
-	return [stash.find_performer(perf, True).get("id") for perf in performers]
+	return [_find_performer(perf).get("id") for perf in performers]
 	for performer in performers:
 		# check if performer exists 
 		# name, alias, disambiguation
@@ -245,8 +249,11 @@ def process_image(image, dryRun = False):
 			for d in data:
 				for f in input_fields:
 					if o:=cascade_get(d,f):
-						choices.append(o)
-			# log.debug("choices before filtering")
+						if isinstance(o, list):
+							choices.extend(o)
+						else:
+							choices.append(o)
+			log.debug(f"choices before filtering: {choices}")
 			# log.debug(choices)
 			if len(choices) > 0:
 				log.info(f"Found choices: {choices}")
