@@ -258,7 +258,7 @@ def process_image(image, dryRun = False):
 				if choose == "first":
 					choices = choices[0]
 			else:
-				break
+				continue
 			log.debug("choices after filtering")
 			log.debug(choices)
 			if choices:
