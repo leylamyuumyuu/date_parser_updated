@@ -266,7 +266,8 @@ def process_image(image, dryRun = False, update_function= stash.update_image):
 				if c:=field.get("processing"):
 					log.warning(f"Running processing script on choices for field {field}.")
 					choices = c(choices)
-					choices = [c for c in choices if c]
+					if isinstance(choices, list):
+						choices = [c for c in choices if c]
 				match choose:
 					case "first":
 						choices = choices[0]
