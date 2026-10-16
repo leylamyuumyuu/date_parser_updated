@@ -142,7 +142,7 @@ def process_group(groups):
 
 FIELDS = [
 	{"output_field": "title", "input_fields": title_fields, "choose": "first"},
-	{"output_field": "date", "input_fields": date_fields, "choose": "first", "processing": process_dates},
+	{"output_field": "date", "input_fields": date_fields, "choose": "min", "processing": process_dates},
 	{"output_field": "details", "input_fields": details_fields, "choose": "all", "processing":"\n\n\n".join},
 	{"output_field": "urls", "input_fields": urls_fields, "choose": "all"},
 	{"output_field": "performer_ids", "input_fields": performer_fields, "choose": "all", "processing": process_performer},
@@ -267,8 +267,13 @@ def process_image(image, dryRun = False):
 					log.warning(f"Running processing script on choices for field {field}.")
 					choices = c(choices)
 					choices = [c for c in choices if c]
-				if choose == "first":
-					choices = choices[0]
+				match choose:
+					case "first":
+						choices = choices[0]
+					case "min":
+						choices = min(choices)
+					case "max":
+						choices = max(choices)
 			else:
 				continue
 			log.debug("choices after filtering")
