@@ -201,8 +201,8 @@ def get_images(f = {}, filter = {}):
 		for i in images:
 			log.debug(i['custom_fields'])
 			findAll = cascade_get(i, "custom_fields.gdl_found")
-			if processAll and not findAll:
-				continue
+			# if processAll and not findAll:
+			# 	continue
 			yield i
 		page += 1
 def get_scenes(f = {}, filter = {}):
