@@ -237,10 +237,8 @@ def cascade_get(dictionary, key: str, default = None):
 		return top_result
 	return cascade_get(top_result, rest[0], default)
 
-def process_image(image, dryRun = False):
+def process_image(image, dryRun = False, update_function= stash.update_image):
 	data = open_json_file(image)
-	
-
 	update_input = {"id": image['id'], "custom_fields": {"partial": {}}}
 	updated = False
 	found = len(data) > 0
@@ -289,14 +287,14 @@ def process_image(image, dryRun = False):
 	if not dryRun or not found:
 		log.info("Updating image")
 		log.debug(update_input)
-		stash.update_image(update_input)
+		update_function(update_input)
 	else:
 		log.info(update_input)
 
 def main():
 	config = stash.get_configuration()["plugins"]
 	settings = {"dryRun": False}
-	files = []
+	files = image_files = video_files = []
 	settings.update(config.get("gallery_dl_parser", {}))
 	dryRun = settings.get("dryRun", False)
 	log.warning(f"Dry Run: {dryRun}")
@@ -304,19 +302,23 @@ def main():
 	processAll = settings.get("processAll", False)
 	match mode_arg:
 		case "image":
-			files = get_images(f)
+			image_files = get_images(f)
 		case "scene":
-			files = get_scenes(f)
+			video_files = get_scenes(f)
 		case _:
-			files = get_files(f)
-			pass
+			image_files = get_images(f)
+			video_files = get_scenes(f)
 	
-	for file in files:
+	for file in image_files:
 		try:
 			process_image(file, dryRun)
 		except Exception as e:
 			log.error("an error occurred...")
-		# break
+	for file in video_files:
+		try:
+			process_image(file, dryRun, stash.update_scene)
+		except Exception as e:
+			log.error("an error occurred...")
 
 
 if __name__=="__main__":
