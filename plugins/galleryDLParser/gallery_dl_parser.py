@@ -144,7 +144,7 @@ FIELDS = [
 	{"output_field": "title", "input_fields": title_fields, "choose": "first"},
 	{"output_field": "date", "input_fields": date_fields, "choose": "min", "processing": process_dates},
 	{"output_field": "details", "input_fields": details_fields, "choose": "all", "processing":"\n\n\n".join},
-	{"output_field": "urls", "input_fields": urls_fields, "choose": "all"},
+	{"output_field": "urls", "input_fields": urls_fields, "choose": "all", "processing": str},
 	{"output_field": "performer_ids", "input_fields": performer_fields, "choose": "all", "processing": process_performer},
 	# {"output_field": "group", "input_fields": group_fields, "choose": "first", "processing": process_group},
 	# {"output_field": "studio", "input_fields": studio_fields, "choose": "first"},
@@ -261,7 +261,7 @@ def process_image(image, dryRun = False, update_function= stash.update_image):
 			log.debug(f"choices before filtering: {choices}")
 			# log.debug(choices)
 			if len(choices) > 0:
-				log.info(f"Found choices: {choices}")
+				log.debug(f"Found choices: {choices}")
 				# field.get("process", lambda x: x)(choices)
 				if c:=field.get("processing"):
 					log.warning(f"Running processing script on choices for field {field}.")
@@ -289,7 +289,7 @@ def process_image(image, dryRun = False, update_function= stash.update_image):
 		log.debug(update_input)
 		update_function(update_input)
 	else:
-		log.info(update_input)
+		log.debug(update_input)
 
 def main():
 	config = stash.get_configuration()["plugins"]
