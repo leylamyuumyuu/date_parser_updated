@@ -84,6 +84,7 @@ mode_arg = json_input["args"]["mode"]
 stash = StashInterface(json_input["server_connection"])
 
 def process_performer(performers):
+	log.debug("Running process performer.")
 	return [stash.find_performer(perf, True).get("id") for perf in performers]
 	for performer in performers:
 		# check if performer exists 
@@ -98,6 +99,7 @@ def process_performer(performers):
 		# add performer to image/scene
 
 def process_tags(tags):
+	log.debug("Running process tags.")
 	return [stash.find_tag(tag, True).get("id") for tag in tags]
 	for tag in tags:
 		stash_tag = stash.find_tag(tag, True)
@@ -250,6 +252,7 @@ def process_image(image, dryRun = False):
 				log.info(f"Found choices: {choices}")
 				# field.get("process", lambda x: x)(choices)
 				if c:=field.get("processing"):
+					log.debug(f"Running processing script on choices for field {field}.")
 					choices = c(choices)
 					choices = [c for c in choices if c]
 				if choose == "first":
