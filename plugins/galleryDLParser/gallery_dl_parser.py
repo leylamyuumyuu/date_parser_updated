@@ -197,6 +197,7 @@ def get_images(f = {}, filter = {}):
 	while total != 0:
 		g.update({"page": page})
 		total, images = stash.find_images(f, g, fragment=IMAGE_QUERY, get_count=True)
+		log.info(f"total: {total}")
 		for i in images:
 			log.debug(i['custom_fields'])
 			findAll = cascade_get(i, "custom_fields.gdl_found")
