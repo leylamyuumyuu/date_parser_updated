@@ -212,6 +212,7 @@ def get_scenes(f = {}, filter = {}):
 	while total != 0:
 		g.update({"page": page})
 		total, images = stash.find_scenes(f, g, fragment=IMAGE_QUERY, get_count=True)
+		log.info(f"total: {total}")
 		for i in images:
 			yield i
 		page += 1
@@ -310,7 +311,10 @@ def main():
 			pass
 	
 	for file in files:
-		process_image(file, dryRun)
+		try:
+			process_image(file, dryRun)
+		except Exception as e:
+			log.error("an error occurred...")
 		# break
 
 
