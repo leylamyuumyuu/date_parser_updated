@@ -225,6 +225,8 @@ def get_files(*args, **kwargs):
 	pass
 
 def cascade_get(dictionary, key: str, default = None):
+	if isinstance(dictionary, str):
+		return dictionary or default
 	top, *rest = key.split(".", 1)
 	top_result = dictionary.get(top)
 	if top_result == None:
@@ -248,7 +250,7 @@ def process_image(image, dryRun = False):
 			choose = field.get("choose")
 			choices = []
 			input_fields = field.get("input_fields", [])
-			log.debug(input_fields)
+			# log.debug(input_fields)
 			for d in data:
 				for f in input_fields:
 					if o:=cascade_get(d,f):
