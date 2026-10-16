@@ -142,7 +142,7 @@ FIELDS = [
 	{"output_field": "date", "input_fields": date_fields, "choose": "first", "processing": process_dates},
 	{"output_field": "details", "input_fields": details_fields, "choose": "all", "processing":"\n\n\n".join},
 	{"output_field": "urls", "input_fields": urls_fields, "choose": "all"},
-	{"output_field": "performer", "input_fields": performer_fields, "choose": "all", "processing": process_performer},
+	{"output_field": "performer_ids", "input_fields": performer_fields, "choose": "all", "processing": process_performer},
 	# {"output_field": "group", "input_fields": group_fields, "choose": "first", "processing": process_group},
 	{"output_field": "studio", "input_fields": studio_fields, "choose": "first"},
 	{"output_field": "photographer", "input_fields": photographer_fields, "choose": "first"},
