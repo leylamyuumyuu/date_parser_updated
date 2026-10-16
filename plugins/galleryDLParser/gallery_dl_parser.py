@@ -195,7 +195,7 @@ def get_images(f = {}, filter = {}):
 	g = {"per_page": 500, "sort":"created_at", "direction": "DESC"}
 	g.update(filter)
 	while total != 0:
-		g.update({"page": page})
+		g["page"] = page
 		total, images = stash.find_images(f, g, fragment=IMAGE_QUERY, get_count=True)
 		log.info(f"total: {total}")
 		for i in images:
@@ -211,9 +211,9 @@ def get_scenes(f = {}, filter = {}):
 	g = {"per_page": 500, "sort":"created_at", "direction": "DESC"}
 	g.update(filter)
 	while total != 0:
-		g.update({"page": page})
+		g["page"] = page
 		total, images = stash.find_scenes(f, g, fragment=IMAGE_QUERY, get_count=True)
-		log.info(f"total: {total}")
+		log.error(f"total: {total}")
 		for i in images:
 			yield i
 		page += 1
