@@ -86,6 +86,7 @@ stash = StashInterface(json_input["server_connection"])
 def _find_performer(perf):
 	log.debug(f"perf: {perf}")
 	p = stash.find_performer(perf, True)
+	log.debug(f"found performer: {p}")
 	return p
 def process_performer(performers):
 	log.debug("Running process performer.")
@@ -104,7 +105,9 @@ def process_performer(performers):
 
 def process_tags(tags):
 	log.debug("Running process tags.")
-	return [stash.find_tag(tag, True).get("id") for tag in tags]
+	o = [stash.find_tag(tag, True) for tag in tags]
+	log.debug(f"final tags: {o}")
+	return [i.get("id") for i in o]
 	for tag in tags:
 		stash_tag = stash.find_tag(tag, True)
 		# check if tag exists 
