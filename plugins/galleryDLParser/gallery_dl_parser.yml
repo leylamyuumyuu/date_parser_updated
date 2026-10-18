@@ -33,3 +33,7 @@ settings:
     displayName: Files per page
     description: How many files to process on a given page
     type: NUMBER
+  conservativeMode:
+    displayName: Conservative mode
+    description: Stops after first error
+    type: BOOLEAN

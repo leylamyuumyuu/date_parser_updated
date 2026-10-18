@@ -84,29 +84,20 @@ mode_arg = json_input["args"]["mode"]
 stash = StashInterface(json_input["server_connection"])
 
 dryRun = False
-
+CONSERVATIVE_MODE = False
 def _find_performer(perf):
 	log.debug(f"perf: {perf}")
-	p = stash.find_performer({"name": perf}, True)
-	log.debug(f"found performer: {p}")
-	return p
+	if perf:
+		p = stash.find_performer({"name": perf}, True)
+		log.debug(f"found performer: {p}")
+		return p
+	return {}
 def process_performer(performers):
 	log.debug("Running process performer.")
-	return [_find_performer(perf).get("id") for perf in performers]
-	for performer in performers:
-		# check if performer exists 
-		# name, alias, disambiguation
-		exists = True
-		if exists:
-			# get performer id, 
-			pass
-		else:
-			# create performer, get id
-			pass
-		# add performer to image/scene
+	return [_find_performer(perf).get("id", None) for perf in performers]
 
 def process_tags(tags):
-	log.debug("Running process tags.")
+	log.debug(f"Running process tags: {tags}")
 	o = [stash.find_tag(tag, True) for tag in tags]
 	log.debug(f"final tags: {o}")
 	return [i.get("id") for i in o]
@@ -131,6 +122,7 @@ def process_group(groups):
 	return groups
 
 def process_url(url) -> str | list[str]:
+	log.debug(f"Processing url: {url}")
 	if isinstance(url, list):
 		log.warning("List passed to process_url.")
 		return url # this should never happen
@@ -139,6 +131,7 @@ def process_url(url) -> str | list[str]:
 	return str(url)
 	
 def process_urls(urls) -> list[str]:
+	log.debug(f"Processing urls: {urls}")
 	output_urls:list[str] = []
 	for u in urls:
 		_u = process_url(u)
@@ -203,7 +196,6 @@ def get_images(f = {}, filter = {}):
 	stash.find_images(f, g, fragment=IMAGE_QUERY, get_count=True, callback=process_image_page)
 
 def get_scenes(f = {}, filter = {}):
-
 	g = {"per_page": 500, "sort":"created_at", "direction": "DESC"}
 	g.update(filter)
 	stash.find_scenes(f, g, fragment=IMAGE_QUERY, get_count=True, callback=process_scene_page)
@@ -228,12 +220,16 @@ def update_progress(count):
 
 def process_scene_page(items, **kwargs):
 	global TOTAL
+	log.info(kwargs)
 	for i in items:
 		update_progress(kwargs.get("count", 1))
 		try:
 			process_image(i, stash.update_scene)
 		except Exception as e:
 			log.error(e.__traceback__)
+			if CONSERVATIVE_MODE:
+				import sys
+				sys.exit(1)
 def process_image_page(items, **kwargs):
 	for i in items:
 		update_progress(kwargs.get("count", 1))
@@ -241,16 +237,20 @@ def process_image_page(items, **kwargs):
 			process_image(i)
 		except Exception as e:
 			log.error(e.__traceback__)
+			if CONSERVATIVE_MODE:
+				import sys
+				sys.exit(1)
 def process_image(image, update_function= stash.update_image):
 	data = open_json_file(image)
 	update_input = {"id": image['id'], "custom_fields": {"partial": {}}}
 	updated = False
 	found = len(data) > 0
 	if found:
-		log.info("data found")
+		log.debug("data found")
 		# log.info(data)
 		for field in FIELDS:
-			log.debug(field.get("output_field"))
+			output_field = field["output_field"]
+			log.debug(output_field)
 			choose = field.get("choose")
 			choices = []
 			input_fields = field.get("input_fields", [])
@@ -268,7 +268,7 @@ def process_image(image, update_function= stash.update_image):
 				log.debug(f"Found choices: {choices}")
 				# field.get("process", lambda x: x)(choices)
 				if c:=field.get("processing"):
-					log.warning(f"Running processing script on choices for field {field}.")
+					log.debug(f"Running processing script on choices for field {field}.")
 					choices = c(choices)
 					if isinstance(choices, list):
 						choices = [c for c in choices if c]
@@ -284,8 +284,10 @@ def process_image(image, update_function= stash.update_image):
 			log.debug("choices after filtering")
 			log.debug(choices)
 			if choices:
-				update_input[field['output_field']] = choices
+				update_input[output_field] = choices
 				updated = True
+			log.debug(f"Successfully processed field: {output_field}")
+			
 	update_input['custom_fields']['partial']['gdl_found'] = int(found)
 	update_input['custom_fields']['partial']['gdl_checked'] = int(True)
 	update_input['custom_fields']['partial']['gdl_updated'] = int(updated)
@@ -297,10 +299,12 @@ def process_image(image, update_function= stash.update_image):
 		log.debug(update_input)
 
 def main():
+	global CONSERVATIVE_MODE
 	config = stash.get_configuration()["plugins"]
 	settings = {"dryRun": False}
 	settings.update(config.get("gallery_dl_parser", {}))
 	dryRun = settings.get("dryRun", False)
+	CONSERVATIVE_MODE = settings.get("conservativeMode", False)
 	log.warning(f"Dry Run: {dryRun}")
 	f = {}
 	processAll = settings.get("processAll", False)
