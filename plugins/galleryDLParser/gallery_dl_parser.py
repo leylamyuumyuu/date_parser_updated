@@ -38,7 +38,7 @@ urls_fields = [
 ]
 
 performer_fields = [
-	"user",
+	"user.name",
 	"username",
 	"fullname",
 	"tags_cosplayer",
@@ -176,8 +176,8 @@ TOTAL = 0
 processAll = False
 def load(filepath):
 	try:
-		with open(filepath) as fp:
-			log.info(f"found: {filepath}")
+		with open(file=filepath) as fp:
+			log.debug(f"found: {filepath}")
 			return json.load(fp)
 	except:
 		return None
