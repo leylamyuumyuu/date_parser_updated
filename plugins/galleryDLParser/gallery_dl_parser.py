@@ -102,7 +102,7 @@ def process_performer(performers):
 
 def _process_tag(tag):
 	try:
-		return stash.find_tag(tag, True)
+		return  stash.find_tag(tag, True)
 	except:
 		return {}
 def process_tags(tags):
@@ -161,6 +161,10 @@ FIELDS = [
 	# {"output_field": "photographer", "input_fields": photographer_fields, "choose": "first"},
 	{"output_field": "tag_ids", "input_fields": tags_fields, "choose": "all", "processing": process_tags},
 ]
+
+ERROR_FIELD = {
+	'custom_fields': {'partial':{'gdl_error':1, "gdl_checked": 1}}
+}
 
 IMAGE_QUERY = """
 	id
@@ -300,10 +304,15 @@ def process_image(image, update_function= stash.update_image):
 	update_input['custom_fields']['partial']['gdl_found'] = int(found)
 	update_input['custom_fields']['partial']['gdl_checked'] = int(True)
 	update_input['custom_fields']['partial']['gdl_updated'] = int(updated)
+	# update_input['custom_fields']['partial']['gdl_error'] = int(True)
+	
 	if not dryRun or not found:
 		log.info("Updating image")
 		log.debug(update_input)
-		update_function(update_input)
+		try:
+			update_function(update_input)
+		except:
+			update_function(ERROR_FIELD)
 	else:
 		log.debug(update_input)
 
