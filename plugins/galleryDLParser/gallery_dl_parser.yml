@@ -29,3 +29,7 @@ settings:
     displayName: Process All
     description: Doesn't ignore files previously marked as not found or processed
     type: BOOLEAN
+  filesPerPage:
+    displayName: Files per page
+    description: How many files to process on a given page
+    type: INT
