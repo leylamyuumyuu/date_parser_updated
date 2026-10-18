@@ -32,4 +32,4 @@ settings:
   filesPerPage:
     displayName: Files per page
     description: How many files to process on a given page
-    type: INT
+    type: NUMBER
