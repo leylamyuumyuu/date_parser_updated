@@ -88,17 +88,26 @@ CONSERVATIVE_MODE = False
 def _find_performer(perf):
 	log.debug(f"perf: {perf}")
 	if perf:
-		p = stash.find_performer({"name": perf}, True)
-		log.debug(f"found performer: {p}")
-		return p
+		try:
+			p = stash.find_performer({"name": perf}, True)
+			log.debug(f"found performer: {p}")
+			return p
+		except:
+			return {}
 	return {}
 def process_performer(performers):
 	log.debug("Running process performer.")
 	return [_find_performer(perf).get("id", None) for perf in performers]
 
+
+def _process_tag(tag):
+	try:
+		return stash.find_tag(tag, True)
+	except:
+		return {}
 def process_tags(tags):
 	log.debug(f"Running process tags: {tags}")
-	o = [stash.find_tag(tag, True) for tag in tags]
+	o = [_process_tag(tag) for tag in tags]
 	log.debug(f"final tags: {o}")
 	return [i.get("id") for i in o]
 
