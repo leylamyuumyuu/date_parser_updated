@@ -271,7 +271,7 @@ def process_image(image, update_function= stash.update_image):
 	t_ids = [i['id'] for i in image['tags']]
 	log.debug(p_ids)
 	log.debug(t_ids)
-	sys.exit(0)
+	# sys.exit(0)
 	update_input = {"id": image['id'], "custom_fields": {"partial": {}}, "tag_ids": t_ids, "performer":p_ids}
 	# update_input.update(image)
 	updated = False
