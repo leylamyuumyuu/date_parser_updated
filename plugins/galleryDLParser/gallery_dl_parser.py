@@ -354,6 +354,12 @@ def main():
 	log.warning(f"Dry Run: {dryRun}")
 	f = {}
 	processAll = settings.get("processAll", False)
+	if not processAll:
+		f["custom_fields"] = {
+			"field": "gdl_checked",
+			"modifier": "EQUALS",
+			"value": 1
+		}
 	match mode_arg:
 		case "image":
 			get_images(f)
