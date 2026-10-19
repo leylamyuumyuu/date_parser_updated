@@ -357,8 +357,8 @@ def main():
 	if not processAll:
 		f["custom_fields"] = {
 			"field": "gdl_checked",
-			"modifier": "EQUALS",
-			"value": "0"
+			"modifier": "IS_NULL",
+			"value": 0
 		}
 	match mode_arg:
 		case "image":
