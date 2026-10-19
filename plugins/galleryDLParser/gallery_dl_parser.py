@@ -10,7 +10,10 @@ import requests
 from datetime import datetime
 from dateparser import parse
 import sys
-
+import logging
+fh = logging.FileHandler('./logs.log',mode="w")
+fh.setLevel(logging.DEBUG)
+log.sl.addHandler(fh)
 title_fields = [
 	"title"
 ]
@@ -19,7 +22,7 @@ date_fields = [
 	"created_at",
 	"updated_at",
 	"createTime",
-	"created"
+	"created",
 	"post_date",
 	"date_url",
 	"media_asset.created_at",
