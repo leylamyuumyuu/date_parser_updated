@@ -9,6 +9,7 @@ import re
 import requests
 from datetime import datetime
 from dateparser import parse
+import sys
 
 title_fields = [
 	"title"
@@ -85,6 +86,7 @@ stash = StashInterface(json_input["server_connection"])
 
 dryRun = False
 CONSERVATIVE_MODE = False
+overwrite = False
 def _find_performer(perf):
 	log.debug(f"perf: {perf}")
 	if perf:
@@ -154,7 +156,7 @@ FIELDS = [
 	{"output_field": "title", "input_fields": title_fields, "choose": "first"},
 	{"output_field": "date", "input_fields": date_fields, "choose": "min", "processing": process_dates},
 	{"output_field": "details", "input_fields": details_fields, "choose": "all", "processing":"\n\n\n".join},
-	{"output_field": "urls", "input_fields": urls_fields, "choose": "all", "processing": process_urls},
+	{"output_field": "urls", "input_fields": urls_fields, "choose": "all", "processing": process_urls, "unique": True},
 	{"output_field": "performer_ids", "input_fields": performer_fields, "choose": "all", "processing": process_performer},
 	# {"output_field": "group", "input_fields": group_fields, "choose": "first", "processing": process_group},
 	# {"output_field": "studio", "input_fields": studio_fields, "choose": "first"},
@@ -170,6 +172,16 @@ IMAGE_QUERY = """
 	id
 	title
 	date
+	details
+	organized
+	performers {
+		id
+	}
+	urls
+	tags {
+		id
+	}
+	title
 	custom_fields
 	files {	
 		path	
@@ -255,7 +267,13 @@ def process_image_page(items, **kwargs):
 				sys.exit(1)
 def process_image(image, update_function= stash.update_image):
 	data = open_json_file(image)
-	update_input = {"id": image['id'], "custom_fields": {"partial": {}}}
+	p_ids = image['performers']
+	t_ids = image['tags']
+	log.debug(p_ids)
+	log.debug(t_ids)
+	sys.exit(0)
+	update_input = {"id": image['id'], "custom_fields": {"partial": {}}, "tag_ids": t_ids, "performer":p_ids}
+	# update_input.update(image)
 	updated = False
 	found = len(data) > 0
 	if found:
@@ -263,6 +281,7 @@ def process_image(image, update_function= stash.update_image):
 		# log.info(data)
 		for field in FIELDS:
 			output_field = field["output_field"]
+			unique = field.get("unique", False)
 			log.debug(output_field)
 			choose = field.get("choose")
 			choices = []
@@ -297,7 +316,13 @@ def process_image(image, update_function= stash.update_image):
 			log.debug("choices after filtering")
 			log.debug(choices)
 			if choices:
-				update_input[output_field] = choices
+				if isinstance(choices, list) and unique:
+					choices = list(set(choices))
+				if isinstance(update_input.get(output_field, None), list) and not overwrite:
+					update_input[output_field].extend(choices)
+				else:
+					update_input[output_field] = choices
+
 				updated = True
 			log.debug(f"Successfully processed field: {output_field}")
 			
