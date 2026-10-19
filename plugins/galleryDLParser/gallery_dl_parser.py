@@ -358,7 +358,7 @@ def main():
 		f["custom_fields"] = {
 			"field": "gdl_checked",
 			"modifier": "EQUALS",
-			"value": 1
+			"value": "0"
 		}
 	match mode_arg:
 		case "image":
