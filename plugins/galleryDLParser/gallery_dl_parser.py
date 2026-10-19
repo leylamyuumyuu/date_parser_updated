@@ -267,8 +267,8 @@ def process_image_page(items, **kwargs):
 				sys.exit(1)
 def process_image(image, update_function= stash.update_image):
 	data = open_json_file(image)
-	p_ids = image['performers']
-	t_ids = image['tags']
+	p_ids = [i['id'] for i in image['performers']]
+	t_ids = [i['id'] for i in image['tags']]
 	log.debug(p_ids)
 	log.debug(t_ids)
 	sys.exit(0)
