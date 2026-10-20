@@ -17,6 +17,7 @@ def cascade_get(dictionary, key: str, default = None):
 		top_result = [
 			cascade_get(c, rest[0], default) for c in dictionary
 		]
+		return top_result
 	else:
 		top_result = dictionary.get(top) # type: ignore
 	if top_result == None:
@@ -40,3 +41,18 @@ def open_json_file(image):
 	]
 	data = [d for d in data if d]
 	return data
+
+if __name__ == "__main__":
+	logging.basicConfig(level=logging.DEBUG, format='%(relativeCreated)6d %(threadName)s %(message)s')
+	test_dict = {
+		"tagged_users": [
+			{"username": "test1", "user": {"name": "test1"}},
+			{"username": "test2", "user": {"name": "test2"}},
+			{"username": "test3", "user": {"name": "test3"}},
+			{"username": "test4", "user": {"name": "test4"}},
+			{"username": "test5", "user": {"name": "test5"}},
+			{"username": "test6", "user": {"name": "test6"}},
+		]
+	}
+	
+	print(cascade_get(test_dict, "tagged_users.*.user.name"))
