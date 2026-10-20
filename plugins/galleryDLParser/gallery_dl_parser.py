@@ -100,6 +100,7 @@ def _find_performer(perf):
 		log.debug(f"found performer: {p}")
 		return p
 	except:
+		logger.exception(f"Error occurred processing performer {perf}")
 		con_check()
 		return {}
 
@@ -109,8 +110,9 @@ def process_performer(performers):
 
 def _process_tag(tag):
 	try:
-		return  stash.find_tag(tag, True)
+		return stash.find_tag(tag, True)
 	except:
+		logger.exception(f"Error occurred processing tag: {tag}")
 		con_check()
 		return {}
 
@@ -121,6 +123,8 @@ def process_tags(tags):
 	return [i.get("id") for i in o]
 
 def process_dates(dates):
+	logger.debug("Processing dates")
+	logger.debug(dates)
 	valid_dates = []
 	for d in dates:
 		dt_object = None
@@ -220,6 +224,7 @@ def get_scenes(f = {}, filter = {}):
 
 def con_check():
 	if CONSERVATIVE_MODE:
+		logger.info("Conservative mode: true. Exiting.")
 		import sys
 		sys.exit(1)
 
@@ -235,7 +240,7 @@ def process_scene_page(items, **kwargs):
 		try:
 			process_image(i, stash.update_scene)
 		except Exception as e:
-			log.error(e.__traceback__)
+			logger.exception(f"An error occurred when processing the scene. {i['id']}")
 			con_check()
 
 
@@ -246,7 +251,8 @@ def process_image_page(items, **kwargs):
 		try:
 			process_image(i)
 		except Exception as e:
-			log.error(e.__traceback__)
+			# log.error(e.__traceback__)
+			logger.exception(f"An error occurred when processing the image. {i['id']}")
 			con_check()
 
 def process_image(image, update_function= stash.update_image):
