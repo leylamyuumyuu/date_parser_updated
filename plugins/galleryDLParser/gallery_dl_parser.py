@@ -233,8 +233,10 @@ def update_progress(count):
 	log.progress(TOTAL/max(count, 1))
 	TOTAL += 1
 
-def process_scene_page(items, **kwargs):
-	logger.info("Processing scene page.")
+def process_scene_page(items, count, page_number, **kwargs):
+	logger.info(f"Total scenes: {count}.")
+	logger.info(f"Processing scene page: {page_number}.")
+	logger.info(count)
 	logger.info(kwargs)
 	for i in items:
 		update_progress(kwargs.get("count", 1))
@@ -245,9 +247,10 @@ def process_scene_page(items, **kwargs):
 			con_check()
 
 
-def process_image_page(items, **kwargs):
-	logger.info("Processing image page.")
-	logger.info(kwargs)
+def process_image_page(items, count, page_number, **kwargs):
+	logger.info(f"Total images: {count}")
+	logger.info(f"Processing image page: {page_number}.")
+	logger.info(count)
 	for i in items:
 		update_progress(kwargs.get("count", 1))
 		try:
