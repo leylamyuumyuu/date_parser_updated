@@ -37,3 +37,8 @@ settings:
     displayName: Conservative mode
     description: Stops after first error
     type: BOOLEAN
+  errorThreshold:
+    displayName: Error Threshold
+    description: Number of errors to tolerate
+    type: NUMBER
+    default: -1

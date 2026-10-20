@@ -209,6 +209,8 @@ SCENE_QUERY = """
 	}
 """
 TOTAL = 0
+ERRORS = 0
+ERROR_THRESHOLD = -1
 processAll = False
 
 
@@ -223,10 +225,12 @@ def get_scenes(f = {}, filter = {}):
 	stash.find_scenes(f, g, fragment=IMAGE_QUERY, get_count=True, callback=process_scene_page)
 
 def con_check():
-	if CONSERVATIVE_MODE:
+	global ERRORS
+	if CONSERVATIVE_MODE and ERRORS > ERROR_THRESHOLD:
 		logger.info("Conservative mode: true. Exiting.")
 		import sys
 		sys.exit(1)
+	ERRORS += 1
 
 def update_progress(count):
 	global TOTAL
@@ -284,8 +288,8 @@ def process_image(image, update_function= stash.update_image):
 			# log.debug(input_fields)
 			for d in data:
 				for f in input_fields:
-					logger.debug(f"Processing input field: {f}")
 					if o:=cascade_get(d,f):
+						logger.debug(f"Found input field: {f}")
 						if isinstance(o, list):
 							choices.extend(o)
 						else:
@@ -339,11 +343,13 @@ def process_image(image, update_function= stash.update_image):
 
 def main():
 	global CONSERVATIVE_MODE
+	global ERROR_THRESHOLD
 	config = stash.get_configuration()["plugins"]
 	settings = {"dryRun": False}
 	settings.update(config.get("gallery_dl_parser", {}))
 	dryRun = settings.get("dryRun", False)
 	CONSERVATIVE_MODE = settings.get("conservativeMode", False)
+	ERROR_THRESHOLD = settings.get("errorThreshold", 10)
 	log.warning(f"Dry Run: {dryRun}")
 	f = {}
 	processAll = settings.get("processAll", False)
