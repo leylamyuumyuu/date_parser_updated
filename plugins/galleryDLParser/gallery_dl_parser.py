@@ -239,7 +239,7 @@ def process_scene_page(items, count, page_number, **kwargs):
 	logger.info(count)
 	logger.info(kwargs)
 	for i in items:
-		update_progress(kwargs.get("count", 1))
+		update_progress(count)
 		try:
 			process_image(i, stash.update_scene)
 		except Exception as e:
@@ -252,7 +252,7 @@ def process_image_page(items, count, page_number, **kwargs):
 	logger.info(f"Processing image page: {page_number}.")
 	logger.info(count)
 	for i in items:
-		update_progress(kwargs.get("count", 1))
+		update_progress(count)
 		try:
 			process_image(i)
 		except Exception as e:
