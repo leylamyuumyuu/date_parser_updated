@@ -234,7 +234,8 @@ def update_progress(count):
 	TOTAL += 1
 
 def process_scene_page(items, **kwargs):
-	log.info(kwargs)
+	logger.info("Processing scene page.")
+	logger.info(kwargs)
 	for i in items:
 		update_progress(kwargs.get("count", 1))
 		try:
@@ -245,7 +246,8 @@ def process_scene_page(items, **kwargs):
 
 
 def process_image_page(items, **kwargs):
-	log.info(kwargs)
+	logger.info("Processing image page.")
+	logger.info(kwargs)
 	for i in items:
 		update_progress(kwargs.get("count", 1))
 		try:
@@ -322,7 +324,7 @@ def process_image(image, update_function= stash.update_image):
 	# update_input['custom_fields']['partial']['gdl_error'] = int(True)
 	
 	if not dryRun or not found:
-		log.info("Updating image")
+		log.info(f"Updating image {update_input['id']}")
 		log.debug(update_input)
 		try:
 			update_function(update_input)
