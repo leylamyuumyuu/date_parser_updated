@@ -11,9 +11,12 @@ from datetime import datetime
 from dateparser import parse
 import sys
 import logging
+from utils import *
 fh = logging.FileHandler('./logs.log',mode="w")
 fh.setLevel(logging.DEBUG)
-log.sl.addHandler(fh)
+logger = logging.getLogger("StashLogger")
+logger.addHandler(fh)
+
 title_fields = [
 	"title"
 ]
@@ -47,7 +50,7 @@ performer_fields = [
 	"fullname",
 	"tags_cosplayer",
 	"userName",
-	"tagged_users",
+	"tagged_users.*.username",
 	"model_name",
 	"tags_character",
 	"author.uniqueId",
@@ -92,24 +95,25 @@ CONSERVATIVE_MODE = False
 overwrite = False
 def _find_performer(perf):
 	log.debug(f"perf: {perf}")
-	if perf:
-		try:
-			p = stash.find_performer({"name": perf}, True)
-			log.debug(f"found performer: {p}")
-			return p
-		except:
-			return {}
-	return {}
+	try:
+		p = stash.find_performer({"name": perf}, True)
+		log.debug(f"found performer: {p}")
+		return p
+	except:
+		con_check()
+		return {}
+
 def process_performer(performers):
 	log.debug("Running process performer.")
 	return [_find_performer(perf).get("id", None) for perf in performers]
-
 
 def _process_tag(tag):
 	try:
 		return  stash.find_tag(tag, True)
 	except:
+		con_check()
 		return {}
+
 def process_tags(tags):
 	log.debug(f"Running process tags: {tags}")
 	o = [_process_tag(tag) for tag in tags]
@@ -202,21 +206,7 @@ SCENE_QUERY = """
 """
 TOTAL = 0
 processAll = False
-def load(filepath):
-	try:
-		with open(file=filepath) as fp:
-			log.debug(f"found: {filepath}")
-			return json.load(fp)
-	except:
-		return None
 
-def open_json_file(image):
-	files = image['files']
-	data = [
-		load(file.get("path") + ".json") for file in files
-	]
-	data = [d for d in data if d]
-	return data
 
 def get_images(f = {}, filter = {}):
 	g = {"per_page": 500, "sort":"created_at", "direction": "DESC"}
@@ -228,18 +218,10 @@ def get_scenes(f = {}, filter = {}):
 	g.update(filter)
 	stash.find_scenes(f, g, fragment=IMAGE_QUERY, get_count=True, callback=process_scene_page)
 
-
-def cascade_get(dictionary, key: str, default = None):
-	if isinstance(dictionary, str):
-		return dictionary or default
-	top, *rest = key.split(".", 1)
-	top_result = dictionary.get(top)
-	if top_result == None:
-		return default
-	if len(rest) == 0:
-		return top_result
-	return cascade_get(top_result, rest[0], default)
-
+def con_check():
+	if CONSERVATIVE_MODE:
+		import sys
+		sys.exit(1)
 
 def update_progress(count):
 	global TOTAL
@@ -247,7 +229,6 @@ def update_progress(count):
 	TOTAL += 1
 
 def process_scene_page(items, **kwargs):
-	global TOTAL
 	log.info(kwargs)
 	for i in items:
 		update_progress(kwargs.get("count", 1))
@@ -255,23 +236,23 @@ def process_scene_page(items, **kwargs):
 			process_image(i, stash.update_scene)
 		except Exception as e:
 			log.error(e.__traceback__)
-			if CONSERVATIVE_MODE:
-				import sys
-				sys.exit(1)
+			con_check()
+
+
 def process_image_page(items, **kwargs):
+	log.info(kwargs)
 	for i in items:
 		update_progress(kwargs.get("count", 1))
 		try:
 			process_image(i)
 		except Exception as e:
 			log.error(e.__traceback__)
-			if CONSERVATIVE_MODE:
-				import sys
-				sys.exit(1)
+			con_check()
+
 def process_image(image, update_function= stash.update_image):
 	data = open_json_file(image)
-	p_ids = [i['id'] for i in image['performers']]
-	t_ids = [i['id'] for i in image['tags']]
+	p_ids = [i.get('id') for i in image['performers'] if i]
+	t_ids = [i.get('id') for i in image['tags'] if i]
 	log.debug(p_ids)
 	log.debug(t_ids)
 	# sys.exit(0)
@@ -372,4 +353,6 @@ def main():
 
 
 if __name__=="__main__":
+	log.warning("This is a test warning using log.")
+	logger.warning("This is a test warning using logger.")
 	main()
