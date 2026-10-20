@@ -9,13 +9,16 @@ def cascade_get(dictionary, key: str, default = None):
 		return dictionary or default
 	
 	top, *rest = key.split(".", 1)
-	if top == "*" and isinstance(dictionary, list):
+	if isList:=isinstance(dictionary, list):
+		logger.debug(f"dictionary is a list. (wildcard? {top =='*'})")
+		logger.debug(dictionary)
+	if top == "*" and isList:
 		logger.debug("Encountered wildcard.")
 		top_result = [
 			cascade_get(c, rest[0], default) for c in dictionary
 		]
 	else:
-		top_result = dictionary.get(top)
+		top_result = dictionary.get(top) # type: ignore
 	if top_result == None:
 		return default
 	if len(rest) == 0:
