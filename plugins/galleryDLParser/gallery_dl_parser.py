@@ -284,6 +284,7 @@ def process_image(image, update_function= stash.update_image):
 			# log.debug(input_fields)
 			for d in data:
 				for f in input_fields:
+					logger.debug(f"Processing input field: {f}")
 					if o:=cascade_get(d,f):
 						if isinstance(o, list):
 							choices.extend(o)
