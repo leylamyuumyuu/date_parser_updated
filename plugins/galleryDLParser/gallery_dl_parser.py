@@ -50,13 +50,13 @@ performer_fields = [
 	"fullname",
 	"tags_cosplayer",
 	"userName",
+	"user.username",
 	"tagged_users.*.username",
 	"textExtra.*.userUniqueId"
 	"model_name",
 	"tags_character",
 	"author.uniqueId",
 	"author.nickname",
-	"author"
 ]
 group_fields = [
 	"group"
