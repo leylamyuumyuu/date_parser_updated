@@ -29,7 +29,8 @@ date_fields = [
 	"post_date",
 	"date_url",
 	"media_asset.created_at",
-	"media_asset.updated_at"
+	"media_asset.updated_at",
+	"epoch"
 ]
 details_fields = [
 	"description"
@@ -41,7 +42,7 @@ urls_fields = [
 	"file_url",
 	"large_file_url",
 	"preview_file_url",
-	
+	"webpage_url"
 ]
 
 performer_fields = [
@@ -57,6 +58,8 @@ performer_fields = [
 	"tags_character",
 	"author.uniqueId",
 	"author.nickname",
+	"uploader",
+	"cast"
 ]
 group_fields = [
 	"group"
@@ -194,7 +197,7 @@ FIELDS = [
 	{"output_field": "urls", "input_fields": urls_fields, "choose": "all", "processing": process_urls, "unique": True},
 	{"output_field": "performer_ids", "input_fields": performer_fields, "choose": "all", "processing": process_performer},
 	# {"output_field": "group", "input_fields": group_fields, "choose": "first", "processing": process_group},
-	# {"output_field": "studio", "input_fields": studio_fields, "choose": "first"},
+	#{"output_field": "studio", "input_fields": studio_fields, "choose": "lineage", "processing":process_studios},
 	# {"output_field": "photographer", "input_fields": photographer_fields, "choose": "first"},
 	{"output_field": "tag_ids", "input_fields": tags_fields, "choose": "all", "processing": process_tags},
 ]

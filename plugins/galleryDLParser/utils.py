@@ -39,6 +39,11 @@ def open_json_file(image):
 	data = [
 		load(file.get("path") + ".json") for file in files
 	]
+	data.extend (
+		[
+			load(file.get("path") + "info.json") for file in files
+		]
+	)
 	data = [d for d in data if d]
 	return data
 
