@@ -1,0 +1,14 @@
+name: Performer Sync
+# requires: PythonDepManager
+description: Copies performers between galleries, scenes, and images
+version: 0.0.3
+url: https://example.com
+exec:
+  - python
+  - "{pluginDir}/main.py"
+
+tasks:
+  - name: Performers from images to gallery
+    description: Performers from images to gallery
+    defaultArgs:
+      mode: all
