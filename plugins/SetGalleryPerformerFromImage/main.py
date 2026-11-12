@@ -15,20 +15,30 @@ logger.addHandler(fh)
 json_input = json.loads(sys.stdin.read())
 mode_arg = json_input["args"]["mode"]
 stash = StashInterface(json_input["server_connection"])
-
+sc_l = len(json_input["server_connection"])
+logger.info("="*sc_l)
+logger.info(json_input["server_connection"])
+logger.info("="*sc_l)
 
 image_fragment = "{ performers { id }}"
 
 def add_performer_from_images(galleries):
 	for gallery in galleries:
 		images = stash.find_gallery_images(gallery_id=gallery['id'])
-		logger.info(images)
+		logger.debug(images)
 		performers = []
 		for i in images:
 			logger.info(i)
 			performers.extend(i['performers'])
-		logger.info(performers)
+		logger.debug(performers)
 		performer_ids = [p['id'] for p in performers]
+		logger.debug(performer_ids)
+		stash.update_galleries(
+			{
+				"ids": [gallery['id']], 
+				"performer_ids": { mode: "ADD", ids: performer_ids }
+			}
+		)
 		sys.exit(0)
 	pass
 
