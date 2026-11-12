@@ -26,8 +26,9 @@ def add_performer_from_images(galleries):
 		performers = []
 		for i in images:
 			logger.info(i)
-			performers.extend(i['performers']['id'])
+			performers.extend(i['performers'])
 		logger.info(performers)
+		performer_ids = [p['id'] for p in performers]
 		sys.exit(0)
 	pass
 
