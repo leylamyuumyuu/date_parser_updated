@@ -27,7 +27,7 @@ def add_performer_from_images(galleries):
 		logger.info(gallery)
 		images = stash.find_gallery_images(gallery_id=gallery['id'])
 		logger.debug(images)
-		performers = []
+		performers = gallery.get('performers', [])
 		for i in images:
 			performers.extend(i['performers'])
 		logger.debug(performers)
@@ -35,7 +35,7 @@ def add_performer_from_images(galleries):
 		logger.debug(performer_ids)
 		stash.update_gallery({
 				"id": gallery['id'], 
-				"performer_ids": { "mode": "ADD", "ids": performer_ids }
+				"performer_ids": performer_ids
 			})
 		sys.exit(0)
 	pass
