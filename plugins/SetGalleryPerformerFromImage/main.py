@@ -36,7 +36,7 @@ def add_performer_from_images(galleries):
 		stash.update_galleries(
 			{
 				"ids": [gallery['id']], 
-				"performer_ids": { mode: "ADD", ids: performer_ids }
+				"performer_ids": { "mode": "ADD", "ids": performer_ids }
 			}
 		)
 		sys.exit(0)
