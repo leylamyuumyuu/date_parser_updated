@@ -22,8 +22,10 @@ image_fragment = "{ performers { id }}"
 def add_performer_from_images(galleries):
 	for gallery in galleries:
 		images = stash.find_gallery_images(gallery_id=gallery['id'])
+		logger.info(images)
 		performers = []
 		for i in images:
+			logger.info(i)
 			performers.extend(i['performers']['id'])
 		logger.info(performers)
 		sys.exit(0)
