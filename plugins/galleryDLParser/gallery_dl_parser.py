@@ -51,6 +51,7 @@ performer_fields = [
 	"tags_cosplayer",
 	"userName",
 	"tagged_users.*.username",
+	"textExtra.*.userUniqueId"
 	"model_name",
 	"tags_character",
 	"author.uniqueId",
@@ -61,7 +62,11 @@ group_fields = [
 	"group"
 ]
 studio_fields = [
-	"category"
+	"category",
+	"subcategory",
+	"subreddit",
+	"group",
+	"search"
 ]
 
 photographer_fields = [
@@ -162,6 +167,25 @@ def process_urls(urls) -> list[str]:
 		else:
 			output_urls.append(u)
 	return output_urls
+
+STUDIO_FRAGMENT = """
+{
+	id
+}
+"""
+
+def process_studios(studios):
+	parent = None
+	studio_ids = [stash.find_studio(s,fragment="", create=True) for s in studio]
+	for studio in studio_ids:
+		if parent == None:
+			parent = studio['id']
+			continue
+
+		if overwrite:
+			pass
+		pass
+	pass
 
 FIELDS = [
 	{"output_field": "title", "input_fields": title_fields, "choose": "first"},
@@ -338,6 +362,7 @@ def process_image(image, update_function= stash.update_image):
 			update_function(update_input)
 		except:
 			update_function(ERROR_FIELD)
+			con_check()
 	else:
 		log.debug(update_input)
 
