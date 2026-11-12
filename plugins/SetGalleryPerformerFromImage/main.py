@@ -33,12 +33,13 @@ def add_performer_from_images(galleries):
 		logger.debug(performers)
 		performer_ids = [p['id'] for p in performers]
 		logger.debug(performer_ids)
-		stash.update_galleries(
-			{
-				"ids": [gallery['id']], 
-				"performer_ids": { "mode": "ADD", "ids": performer_ids }
-			}
-		)
+		if len(performers) > 0:
+			stash.update_galleries(
+				{
+					"ids": [gallery['id']], 
+					"performer_ids": { "mode": "ADD", "ids": performer_ids }
+				}
+			)
 		#sys.exit(0)
 	pass
 
