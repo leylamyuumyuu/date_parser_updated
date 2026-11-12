@@ -5,6 +5,7 @@ ensure_import("stashapi:stashapp-tools")
 import stashapi.log as log
 from stashapi.stashapp import StashInterface
 import logging
+import json
 
 fh = logging.FileHandler('./logs.log',mode="w")
 fh.setLevel(logging.DEBUG)
