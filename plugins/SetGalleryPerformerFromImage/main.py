@@ -28,7 +28,7 @@ def add_performer_from_images(galleries):
 		logger.debug(images)
 		performers = []
 		for i in images:
-			logger.info(i)
+			logger.debug(i)
 			performers.extend(i['performers'])
 		logger.debug(performers)
 		performer_ids = [p['id'] for p in performers]
@@ -39,7 +39,7 @@ def add_performer_from_images(galleries):
 				"performer_ids": { "mode": "ADD", "ids": performer_ids }
 			}
 		)
-		sys.exit(0)
+		#sys.exit(0)
 	pass
 
 def main(*args, **kwargs) -> None:
