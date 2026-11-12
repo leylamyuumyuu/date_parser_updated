@@ -21,8 +21,17 @@ logger.info(json_input["server_connection"])
 logger.info("="*sc_l)
 
 image_fragment = "{ performers { id }}"
-
-def add_performer_from_images(galleries):
+COUNT = -1
+TOTAL = 0
+def add_performer_from_images(galleries, count, page_number):
+	global COUNT
+	global TOTAL
+	if COUNT == -1:
+		COUNT = count
+	if COUNT == 0:
+		return
+	TOTAL += 1
+	log.progress(TOTAL/COUNT)
 	for gallery in galleries:
 		images = stash.find_gallery_images(gallery_id=gallery['id'])
 		logger.debug(images)
@@ -45,7 +54,7 @@ def add_performer_from_images(galleries):
 
 def main(*args, **kwargs) -> None:
 	cb = add_performer_from_images
-	galleries = stash.find_galleries(filter={"per_page": 50, "sort":"created_at", "direction": "DESC"},callback=cb)
+	galleries = stash.find_galleries(filter={"per_page": 50, "sort":"created_at", "direction": "DESC"}, get_count=True, callback=cb)
 
 
 if __name__ == "__main__":
