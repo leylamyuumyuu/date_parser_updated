@@ -44,7 +44,7 @@ def add_performer_from_images(galleries):
 
 def main(*args, **kwargs) -> None:
 	cb = add_performer_from_images
-	galleries = stash.find_galleries(filter={"per_page": 50},callback=cb)
+	galleries = stash.find_galleries(filter={"per_page": 50, "sort":"created_at", "direction": "DESC"},callback=cb)
 
 
 if __name__ == "__main__":
