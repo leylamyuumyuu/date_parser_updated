@@ -328,13 +328,14 @@ def process_image(image, update_function= stash.update_image):
 					choices = c(choices)
 					if isinstance(choices, list):
 						choices = [c for c in choices if c]
-				match choose:
-					case "first":
-						choices = choices[0]
-					case "min":
-						choices = min(choices)
-					case "max":
-						choices = max(choices)
+				if isinstance(choices, list):
+					match choose:
+						case "first":
+							choices = choices[0]
+						case "min":
+							choices = min(choices)
+						case "max":
+							choices = max(choices)
 			else:
 				continue
 			log.debug("choices after filtering")
