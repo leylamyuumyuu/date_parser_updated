@@ -19,13 +19,14 @@ stash = StashInterface(json_input["server_connection"])
 
 image_fragment = "{ performers { id }}"
 
-def add_performer_from_images(gallery):
-	images = stash.find_gallery_images(gallery_id=gallery['id'])
-	performers = []
-	for i in images:
-		performers.extend(i['performers']['id'])
-	logger.info(performers)
-	sys.exit(0)
+def add_performer_from_images(galleries):
+	for gallery in galleries:
+		images = stash.find_gallery_images(gallery_id=gallery['id'])
+		performers = []
+		for i in images:
+			performers.extend(i['performers']['id'])
+		logger.info(performers)
+		sys.exit(0)
 	pass
 
 def main(*args, **kwargs) -> None:
